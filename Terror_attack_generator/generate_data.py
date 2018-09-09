@@ -8,16 +8,16 @@ class generate_data:
         # terror group: tg
         self.tg_casualities = 0
         self.rp_attack_fact = 0
-        self.full_moon_attack_fact = 0
+        self.fm_attack_fact = 0
         self.holiday_attack_fact = 0
-        self.all_full_moon = self.set_full_moon()
+        self.all_fm = self.set_fm()
         
-    def set_full_moon(self):
+    def set_fm(self):
         full_moons = []
-        full_moon_date = first_full_moon
-        while full_moon_date<end_date:
-            full_moons.append(full_moon_date)
-            full_moon_date = full_moon_date + dt.timedelta(days=30)
+        fm_date = first_fm
+        while fm_date<end_date:
+            full_moons.append(fm_date)
+            fm_date = fm_date + dt.timedelta(days=30)
         return np.array(full_moons)
     
     def loneWolf_attack(self):
@@ -39,9 +39,13 @@ class generate_data:
         self.rp = rp_deposit_per_day
         self.rp_attack_fact = (self.rp-5000)*3/100000
         
-    def set_full_moon_attack_fact(today):
-        None       
-        
+    def set_fm_attack_fact(self, today):
+        dist_to_fm = np.absolute(today-self.all_fm)
+        closest_dist_to_fm = np.min(dist_to_fm).days
+        if closest_dist_to_fm <= 5:
+            self.fm_attack_fact = fm_attack_dist[closest_dist_to_fm]
+        else:
+            self.fm_attack_fact = 0
         
     def rp_manager(self):
         self.rp = self.rp-self.tg_casualities * rp_withdraw_per_casuality

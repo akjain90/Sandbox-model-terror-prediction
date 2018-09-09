@@ -11,12 +11,15 @@ import datetime as dt
 import pandas as pd
 #%%
 start_date = dt.date(1990,1,1)  # dt.date(year, month, day)
-end_date = dt.date(2015,12,31)
+#end_date = dt.date(2015,12,31)
+end_date = dt.date(1995,12,31)
 num_holidays = 12
-first_full_moon = dt.date(1990,1,2)
+first_fm = dt.date(1990,1,2)
 #randomness = 5
 
-full_moon_booster = 0.1
+# fm: full moon
+fm_booster = 0.1
+fm_attack_dist = np.array([0.1,0.05,0.04,0.03,0.02,0.01])
 holiday_booster = 0.1
 # resource pool: rp
 rp_init = 4500
