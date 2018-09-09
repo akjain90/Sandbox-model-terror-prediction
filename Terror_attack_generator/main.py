@@ -10,13 +10,14 @@ import matplotlib.pyplot as plt
 
 
 def main():
-   num_days = 1000
+   num_days = 10000
    attack = np.zeros(num_days)
    ga = generate_data()
-   for day in range(num_days):
-       attack[day] = ga.loneWolf_attack()
-   print (attack)
-   print(np.sum(attack))
-   plt.plot(attack)
+   print(len(ga.all_full_moon))
+#   for day in range(num_days):
+#       attack[day] = ga.loneWolf_attack()
+#   print (attack)
+#   print(np.sum(attack))
+#   plt.plot(attack)
 if __name__ == "__main__":
     main()
