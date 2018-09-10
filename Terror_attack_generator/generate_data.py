@@ -11,6 +11,26 @@ class generate_data:
         self.fm_attack_fact = 0
         self.holiday_attack_fact = 0
         self.all_fm = self.set_fm()
+        self.holidays = self.set_holidays(num_holidays)
+        
+    def set_holidays(self,N):
+        day_range = np.linspace(1,30,30)
+        month_range = np.linspace(1,12,12)
+        days = np.random.choice(day_range,N).astype(np.int32)
+        months = np.random.choice(month_range,N).astype(np.int32)
+        year = start_date.year
+        holidays = []
+        while year <= end_date.year:
+            print(year)
+            for day,month in zip(days,months):
+                print('Day: ',day,' Month: ', month)
+                try:
+                    holidays.append(dt.date(year,month,day))
+                except:
+                    #print('Exception is generated')
+                    None
+            year+=1
+        return(np.array(holidays))
         
     def set_fm(self):
         full_moons = []
