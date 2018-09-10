@@ -12,7 +12,7 @@ import pandas as pd
 #%%
 start_date = dt.date(1990,1,1)  # dt.date(year, month, day)
 #end_date = dt.date(2015,12,31)
-end_date = dt.date(1995,12,31)
+end_date = dt.date(2010,12,31)
 num_holidays = 12
 first_fm = dt.date(1990,1,2)
 #randomness = 5
@@ -32,6 +32,6 @@ rp_withdraw_per_casuality = 500
 lw_casualities_low = 1
 lw_casualities_high = 5
 lw_attack_dist = [0.01,0.99]
-lw_attack_possi = [True,False]
+attack_possi = [True,False]
 lw_casualities = [1,2,3,4]
 lw_casualities_dist = [0.5,0.25,0.15,0.1]

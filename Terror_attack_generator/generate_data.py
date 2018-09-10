@@ -45,7 +45,7 @@ class generate_data:
         num_lw = np.random.randint(low = lw_casualities_low, high = lw_casualities_high)
         num_casualities_per_lw = np.zeros(num_lw)
         for lw in range(num_lw):
-            is_lw_attacked = np.random.choice(a = lw_attack_possi,
+            is_lw_attacked = np.random.choice(a = attack_possi,
                                                 p = lw_attack_dist)
             if is_lw_attacked:
                 num_casualities_per_lw[lw] = np.random.choice(a = lw_casualities,
@@ -53,8 +53,8 @@ class generate_data:
         self.total_lw_attack = np.sum(num_casualities_per_lw)
         #return self.total_lw_attack
         
-    def deposit_in_rp(self):
-        self.rp = rp_deposit_per_day
+    def set_rp_attack_fact(self):
+        self.rp += rp_deposit_per_day
         self.rp_attack_fact = (self.rp-5000)*3/100000
         
     def set_fm_attack_fact(self, today):
@@ -79,8 +79,19 @@ class generate_data:
         self.rp = self.rp-self.tg_casualities * rp_withdraw_per_casuality
         
     
-    def set_tg_attacks(self):
-        None
-    
+    def set_tg_casualities(self):
+        self.tg_casualities = 0
+        total_attack_fact = self.fm_attack_fact+self.holi_attack_fact+self.rp_attack_fact
+        if total_attack_fact<0:
+            total_attack_fact = 0
+        elif total_attack_fact>1:
+            total_attack_fact = 1
+        is_tg_attacked = np.random.choice(a = attack_possi,
+                                          p = [total_attack_fact,1-total_attack_fact])
+        if is_tg_attacked:
+            self.tg_casualities = np.random.randint(20,50)
+        self.rp_manager()
+            
+            
     def fill_attacks(self):
         None
