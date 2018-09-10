@@ -42,7 +42,7 @@ class generate_data:
         self.total_lw_attack = 0
         #np.random.seed(56)
         # loneWolf : lw
-        num_lw = np.random.randint(low = lw_casualities_low, high = lw_casualities_high)
+        num_lw = np.random.randint(low = 0, high = 5)
         num_casualities_per_lw = np.zeros(num_lw)
         for lw in range(num_lw):
             is_lw_attacked = np.random.choice(a = attack_possi,

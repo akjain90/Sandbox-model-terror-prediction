@@ -9,23 +9,27 @@ from generate_data import *
 import matplotlib.pyplot as plt
 import datetime as dt
 import numpy as np
-
+import pandas as pd
 
 def main():
-   num_days = 10000
-   attack = np.zeros(num_days)
+   #num_days = 10000
+   #attack = np.zeros(num_days)
    ga = generate_data()
    
    fp_temp = []
    temp_1 = start_date
-   while temp_1<end_date:
-       ga.loneWolf_attack()
+   while temp_1<=end_date:
+       #ga.loneWolf_attack()
        ga.set_holi_attack_fact(temp_1)
        ga.set_fm_attack_fact(temp_1)
        ga.set_rp_attack_fact()
        ga.set_tg_casualities()
-       fp_temp.append(ga.tg_casualities+ga.total_lw_attack)
+       fp_temp.append(ga.tg_casualities)#+ga.total_lw_attack)
        temp_1+=dt.timedelta(1)
+   print(len(fp_temp))
+   print(len(pd.date_range(start=start_date,end=end_date)))
+   attack_df = pd.DataFrame({'Date':pd.date_range(start=start_date,end=end_date),'Num_attacks':fp_temp})
+   attack_df.to_csv('../ML_predictor/data.csv')
    plt.plot(fp_temp)
    
 ## Script to check holidays attack factor
