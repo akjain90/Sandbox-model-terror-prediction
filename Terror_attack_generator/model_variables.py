@@ -20,7 +20,7 @@ first_fm = dt.date(1990,1,2)
 # fm: full moon
 fm_booster = 0.1
 fm_attack_dist = np.array([0.1,0.05,0.04,0.03,0.02,0.01])
-holi_attack_dist = np.array([])
+holi_attack_dist = np.array([0.1,0.05,0.04,0.03,0.02,0.01])
 holiday_booster = 0.1
 # resource pool: rp
 rp_init = 4500

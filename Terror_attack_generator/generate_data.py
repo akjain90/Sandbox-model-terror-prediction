@@ -9,7 +9,7 @@ class generate_data:
         self.tg_casualities = 0
         self.rp_attack_fact = 0
         self.fm_attack_fact = 0
-        self.holiday_attack_fact = 0
+        self.holi_attack_fact = 0
         self.all_fm = self.set_fm()
         self.holidays = self.set_holidays(num_holidays)
         
@@ -21,9 +21,7 @@ class generate_data:
         year = start_date.year
         holidays = []
         while year <= end_date.year:
-            print(year)
             for day,month in zip(days,months):
-                print('Day: ',day,' Month: ', month)
                 try:
                     holidays.append(dt.date(year,month,day))
                 except:
@@ -66,6 +64,16 @@ class generate_data:
             self.fm_attack_fact = fm_attack_dist[closest_dist_to_fm]
         else:
             self.fm_attack_fact = 0
+        
+        
+    def set_holi_attack_fact(self, today):
+        dist_to_holi = np.absolute(today-self.holidays)
+        closest_dist_to_holi = np.min(dist_to_holi).days
+        if closest_dist_to_holi <= 5:
+            self.holi_attack_fact = holi_attack_dist[closest_dist_to_holi]
+        else:
+            self.holi_attack_fact = 0
+        
         
     def rp_manager(self):
         self.rp = self.rp-self.tg_casualities * rp_withdraw_per_casuality

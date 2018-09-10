@@ -16,7 +16,15 @@ def main():
    attack = np.zeros(num_days)
    ga = generate_data()
    
-   print(ga.holidays)
+# Script to check holidays attack factor
+# even full moon attack factor can be set and both the attack factor can be added and plotted
+   fp_temp = []
+   temp_1 = start_date
+   while temp_1<end_date:
+       ga.set_holi_attack_fact(temp_1)
+       fp_temp.append(ga.holi_attack_fact)
+       temp_1+=dt.timedelta(1)
+   plt.plot(fp_temp)
    
 ## Script to check full moon attack factor
 #   fp_temp = []
