@@ -15,21 +15,37 @@ def main():
    #num_days = 10000
    #attack = np.zeros(num_days)
    ga = generate_data()
+   date = pd.date_range(start=start_date,end=end_date)
    
    fp_temp = []
+   holiday_data = []
+   full_moons = ga.all_fm
+   holidays = ga.holidays
+   full_moon_array = np.zeros(len(date))
+   holiday_array = np.zeros(len(date))
    temp_1 = start_date
+   #print(int(start_date in all_full_moon))
+   index = 0
+   #print(all_full_moon)
    while temp_1<=end_date:
-       #ga.loneWolf_attack()
+       full_moon_array[index] = int(temp_1 in full_moons)
+       holiday_array[index] = int(temp_1 in holidays)
+       ga.loneWolf_attack()
        ga.set_holi_attack_fact(temp_1)
        ga.set_fm_attack_fact(temp_1)
        ga.set_rp_attack_fact()
        ga.set_tg_casualities()
-       fp_temp.append(ga.tg_casualities)#+ga.total_lw_attack)
+       fp_temp.append(ga.tg_casualities+ga.total_lw_attack)
        temp_1+=dt.timedelta(1)
-   print(len(fp_temp))
-   print(len(pd.date_range(start=start_date,end=end_date)))
-   attack_df = pd.DataFrame({'Date':pd.date_range(start=start_date,end=end_date),'Num_attacks':fp_temp})
-   attack_df.to_csv('../ML_predictor/data.csv')
+       index += 1
+   #print((full_moon_array))
+   #print(len(pd.date_range(start=start_date,end=end_date)))
+   attack_df = pd.DataFrame({'Date':date,
+                             'Num_attacks':fp_temp,
+                             'Full_moons' : full_moon_array,
+                             'Holidays': holiday_array})
+#   print(attack_df.head(10))
+#   attack_df.to_csv('../ML_predictor/data.csv')
    plt.plot(fp_temp)
    
 ## Script to check holidays attack factor

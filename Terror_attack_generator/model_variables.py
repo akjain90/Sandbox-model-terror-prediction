@@ -11,10 +11,10 @@ import datetime as dt
 import pandas as pd
 #%%
 start_date = dt.date(1970,1,1)  # dt.date(year, month, day)
-#end_date = dt.date(2015,12,31)
-end_date = dt.date(2010,12,31)
+end_date = dt.date(2015,12,31)
+#end_date = dt.date(2010,12,31)
 num_holidays = 12
-first_fm = dt.date(1990,1,2)
+first_fm = dt.date(1970,1,2)
 #randomness = 5
 
 # fm: full moon

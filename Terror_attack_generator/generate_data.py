@@ -1,17 +1,23 @@
 from model_variables import *
 import numpy as np
 import datetime as dt
+
+# tg: terror group
+# lw: lone wolf
+# rp: resource pool
 class generate_data:
     def __init__(self):
-        self.total_lw_attack = 0
-        self.rp = rp_init
-        # terror group: tg
-        self.tg_casualities = 0
-        self.rp_attack_fact = 0
-        self.fm_attack_fact = 0
-        self.holi_attack_fact = 0
-        self.all_fm = self.set_fm()
-        self.holidays = self.set_holidays(num_holidays)
+        self.total_lw_attack = 0  # total attacks of all lone wolf
+        self.rp = rp_init  # resource pool's current value
+        self.tg_casualities = 0  # casualities by terrorist group attack
+        self.rp_attack_fact = 0  # terror grpup attack probablity 
+                                 # due to resource pool value
+        self.fm_attack_fact = 0  # probablity contribution of full moon 
+                                 # to terror group attack
+        self.holi_attack_fact = 0  # probablity contribution of holiday 
+                                   # to terror group attack
+        self.all_fm = self.set_fm()  # list of all full moons
+        self.holidays = self.set_holidays(num_holidays)  # list of all holidays
         
     def set_holidays(self,N):
         day_range = np.linspace(1,30,30)
@@ -41,7 +47,6 @@ class generate_data:
     def loneWolf_attack(self):
         self.total_lw_attack = 0
         #np.random.seed(56)
-        # loneWolf : lw
         num_lw = np.random.randint(low = 0, high = 5)
         num_casualities_per_lw = np.zeros(num_lw)
         for lw in range(num_lw):
@@ -91,7 +96,3 @@ class generate_data:
         if is_tg_attacked:
             self.tg_casualities = np.random.randint(20,50)
         self.rp_manager()
-            
-            
-    def fill_attacks(self):
-        None
