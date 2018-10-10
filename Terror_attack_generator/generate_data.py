@@ -94,5 +94,6 @@ class generate_data:
         is_tg_attacked = np.random.choice(a = attack_possi,
                                           p = [total_attack_fact,1-total_attack_fact])
         if is_tg_attacked:
-            self.tg_casualities = np.random.randint(20,50)
+            #self.tg_casualities = np.random.randint(20,50)
+            self.tg_casualities = 1
         self.rp_manager()
