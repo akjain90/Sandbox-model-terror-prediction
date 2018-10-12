@@ -41,7 +41,8 @@ tf.reset_default_graph()
 
 l = 10
 w = 10
-c = 3
+#c = 3
+c = 1
 pred_window = 30
 num_epoch = 200
 batch_size = 200
@@ -114,14 +115,14 @@ with tf.Session() as sess:
     for epoch in range(num_epoch):
         #X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
         X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
-        sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
+        sess.run(training_op, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
         if epoch%10==0:
-            train_error = sess.run(mse, feed_dict = {X:X_batch, y: y_batch})
+            train_error = sess.run(mse, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
             #test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
             test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
-            test_error = sess.run(mse, feed_dict = {X:test_x, y: test_y})
+            test_error = sess.run(mse, feed_dict = {X:test_x[:,:,:,2:], y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
-    saver.save(sess,'../saved_model/model')
+    saver.save(sess,'../saved_model/model_only_attack')
     #plt.figure()
     #plt.plot()
     
@@ -131,10 +132,10 @@ with tf.Session() as sess:
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
 with tf.Session() as sess:
-    saver.restore(sess,'../saved_model/model')
+    saver.restore(sess,'../saved_model/model_only_attack')
     #X_check, y_check CNN= fetch_batch(test_std, 1, l, w, pred_window)
     X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
-    prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
+    prediction = sess.run(output,feed_dict={X:X_check[:,:,:,2:], y: y_check})
     plt.figure()
     plt.plot(y_check[0,:])
     plt.plot(prediction[0,:])
