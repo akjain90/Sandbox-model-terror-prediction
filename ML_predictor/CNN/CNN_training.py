@@ -43,7 +43,7 @@ l = 10
 w = 10
 c = 3
 pred_window = 30
-num_epoch = 200
+num_epoch = 2000
 batch_size = 200
 
 
@@ -101,7 +101,7 @@ output = tf.layers.dense(dense_2, units=pred_window, name="output")
 
 mse = tf.reduce_mean(tf.square(output-y),name="MSE")
 
-optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+optimizer = tf.train.AdamOptimizer(learning_rate=0.001)
 
 training_op = optimizer.minimize(mse)
 
@@ -115,7 +115,7 @@ with tf.Session() as sess:
         #X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
         X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
         sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
-        if epoch%10==0:
+        if epoch%50==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch, y: y_batch})
             #test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
             test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
@@ -136,5 +136,5 @@ with tf.Session() as sess:
     X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
     prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
     plt.figure()
-    plt.plot(y_check[0,:])
+    plt.plot(1+y_check[0,:])
     plt.plot(prediction[0,:])
