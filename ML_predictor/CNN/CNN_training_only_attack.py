@@ -21,8 +21,18 @@ def fetch_batch(data, batch_size, l, w, pred_window):
         X.append(temp_X)
         y.append(temp_y)
     return np.array(X), np.array(y)
+
 #%%
-data = pd.read_csv("../only_full_moon.csv",index_col=0)
+""" Save figure """
+def save_fig(fig_id,directory, tight_layout=True):
+    path = os.path.join(directory+ str(fig_id) + ".png")
+    print("Saving figure", fig_id)
+    if tight_layout:
+        plt.tight_layout()
+    plt.savefig(path, format='png', dpi=300)
+
+#%%
+data = pd.read_csv("../2_complex_without_lw.csv",index_col=0)
 
 data_val = data.values
 print(len(data_val))
@@ -46,6 +56,7 @@ c = 1
 pred_window = 30
 num_epoch = 2000
 batch_size = 200
+directory = '../saved_model/2_complex_without_lw/only_attack/'
 
 
 X = tf.placeholder(dtype = tf.float32, 
@@ -113,16 +124,16 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
     for epoch in range(num_epoch):
-        #X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
-        X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
+        X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
+        #X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
         sess.run(training_op, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
         if epoch%50==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
-            #test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
-            test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
+            test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
+            #test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
             test_error = sess.run(mse, feed_dict = {X:test_x[:,:,:,2:], y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
-    saver.save(sess,'../saved_model/model_only_attack')
+    saver.save(sess,directory)
     #plt.figure()
     #plt.plot()
     
@@ -132,10 +143,16 @@ with tf.Session() as sess:
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
 with tf.Session() as sess:
-    saver.restore(sess,'../saved_model/model_only_attack')
-    #X_check, y_check CNN= fetch_batch(test_std, 1, l, w, pred_window)
-    X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
-    prediction = sess.run(output,feed_dict={X:X_check[:,:,:,2:], y: y_check})
-    plt.figure()
-    plt.plot(y_check[0,:])
-    plt.plot(prediction[0,:])
+    saver.restore(sess,directory)
+    
+    for i in range(10):
+        X_check, y_check = fetch_batch(test_std, 1, l, w, pred_window)
+        #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
+        prediction = sess.run(output,feed_dict={X:X_check[:,:,:,2:], y: y_check})
+        plt.figure()
+        plt.plot(y_check[0,:],label='actual')
+        plt.plot(prediction[0,:],label='predictions')
+        plt.legend()
+        plt.xlabel('Days')
+        plt.ylabel('Attack')
+        save_fig(i,directory)

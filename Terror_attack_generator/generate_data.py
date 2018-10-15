@@ -6,6 +6,7 @@ import datetime as dt
 # lw: lone wolf
 # rp: resource pool
 class generate_data:
+    
     def __init__(self):
         self.total_lw_attack = 0  # total attacks of all lone wolf
         self.rp = rp_init  # resource pool's current value
@@ -85,6 +86,7 @@ class generate_data:
         
     
     def set_tg_casualities(self):
+        #global count
         self.tg_casualities = 0
         total_attack_fact = self.fm_attack_fact+self.holi_attack_fact+self.rp_attack_fact
         if total_attack_fact<0:
@@ -94,6 +96,6 @@ class generate_data:
         is_tg_attacked = np.random.choice(a = attack_possi,
                                           p = [total_attack_fact,1-total_attack_fact])
         if is_tg_attacked:
-            #self.tg_casualities = np.random.randint(20,50)
-            self.tg_casualities = 1
+            self.tg_casualities = np.random.randint(20,50)
+            #self.tg_casualities = 1
         self.rp_manager()
