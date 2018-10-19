@@ -45,7 +45,7 @@ def main():
                              'Full_moons' : full_moon_array,
                              'Holidays': holiday_array})
 #   print(attack_df.head(10))
-   attack_df.to_csv('../ML_predictor/1_complex.csv')
+   #attack_df.to_csv('../ML_predictor/random_new.csv')
    plt.plot(fp_temp)
    
 ## Script to check holidays attack factor

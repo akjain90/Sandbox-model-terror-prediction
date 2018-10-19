@@ -1,0 +1,8 @@
+CNN_training.py : This model has the functionality to train the model on one data and then do the prediction on the same data. The training data consist of attacks along with the features. 
+
+CNN_training_only_attack.py : This model has the functionality to train the model on one data and then do the prediction on the same data. The training data consist of only attacks.
+
+CNN_training_random_check.py : This model has the functionality to train the model on one data and then do the prediction on the other data. The training data consist of attacks along with the features.
+
+CNN_training_only_attack_random_check.py : This model has the functionality to train the model on one data and then do the prediction on the other data. The training data consist of only attacks.
+

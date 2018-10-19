@@ -139,6 +139,20 @@ with tf.Session() as sess:
     
 
 #print(mse)
+    
+#%%
+#X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
+data_check = pd.read_csv("../random_new.csv",index_col=0)
+
+data_check_val = data_check.values
+print(data_check_val.shape)
+check_set = data_check_val[:,1:]
+
+print(check_set.shape)
+#std = StandardScaler()
+
+check_std = std.transform(check_set)
+
 
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
@@ -146,7 +160,7 @@ with tf.Session() as sess:
     saver.restore(sess,directory)
     
     for i in range(50):
-        X_check, y_check = fetch_batch(test_std, 1, l, w, pred_window)
+        X_check, y_check = fetch_batch(check_std, 1, l, w, pred_window)
         #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check[:,:,:,2:], y: y_check})
         plt.figure()
@@ -155,4 +169,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,directory)
+        save_fig(i,'../saved_model/random_new/only_attack/')

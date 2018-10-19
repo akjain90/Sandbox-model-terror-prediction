@@ -31,15 +31,15 @@ def save_fig(fig_id,directory, tight_layout=True):
         plt.tight_layout()
     plt.savefig(path, format='png', dpi=300)
 #%%
-data = pd.read_csv("../2_complex_without_lw.csv",index_col=0)
+data = pd.read_csv("../1_complex.csv",index_col=0)
 
 data_val = data.values
-print(len(data_val))
+print(data_val.shape)
 #%%
 train_len = np.floor_divide(70*len(data_val),100)
 train_set = data_val[:train_len,1:]
 test_set = data_val[train_len:,1:]
-
+print(train_set.shape)
 std = StandardScaler()
 
 train_std = std.fit_transform(train_set)
@@ -55,7 +55,7 @@ c = 3
 pred_window = 30
 num_epoch = 2000
 batch_size = 200
-directory = '../saved_model/2_complex_without_lw/with_features/'
+directory = '../saved_model/1_complex/with_features/'
 
 X = tf.placeholder(dtype = tf.float32, 
                    shape = (None, l,w,c), name="X")
@@ -143,7 +143,7 @@ with tf.Session() as sess:
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
-    for i in range(10):
+    for i in range(50):
         X_check, y_check = fetch_batch(test_std, 1, l, w, pred_window)
         #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
