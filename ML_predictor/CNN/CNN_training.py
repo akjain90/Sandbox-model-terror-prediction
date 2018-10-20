@@ -1,4 +1,3 @@
-check this branch
 import pandas as pd
 import csv
 import numpy as np
@@ -7,45 +6,13 @@ import datetime
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 import os
+from modules.fetch_batch import fetch_batch
+from modules.save_fig import save_fig
+from modules.prepare_data import prepare_data
 #%%
 
-def fetch_batch(data, batch_size, l, w, pred_window):
-    num_steps = l*w
-    data_len, features = data.shape
-    end = data_len-num_steps-pred_window
-    index = np.random.randint(0,end,batch_size)
-    X = []
-    y = []
-    for i in index:
-        temp_X = data[i:i+num_steps,:].reshape(l,w,features)
-        temp_y = data[i+num_steps:i+num_steps+pred_window,0].reshape(-1)
-        X.append(temp_X)
-        y.append(temp_y)
-    return np.array(X), np.array(y)
-
-#%%
-""" Save figure """
-def save_fig(fig_id,directory, tight_layout=True):
-    path = os.path.join(directory+ str(fig_id) + ".png")
-    print("Saving figure", fig_id)
-    if tight_layout:
-        plt.tight_layout()
-    plt.savefig(path, format='png', dpi=300)
-#%%
-data = pd.read_csv("../1_complex.csv",index_col=0)
-
-data_val = data.values
-print(data_val.shape)
-#%%
-train_len = np.floor_divide(70*len(data_val),100)
-train_set = data_val[:train_len,1:]
-test_set = data_val[train_len:,1:]
-print(train_set.shape)
-std = StandardScaler()
-
-train_std = std.fit_transform(train_set)
-test_std = std.transform(test_set)
-
+train_std,train_date,test_std,test_date,cv_std,cv_date,std = prepare_data("../1_complex.csv",
+                                                                      normalize=True)
 #%%
 # graph definition
 tf.reset_default_graph()
@@ -145,13 +112,14 @@ img_dir = "../../../images/1_complex/with_features/"
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
-    for i in range(50):
-        X_check, y_check = fetch_batch(test_std, 1, l, w, pred_window)
+    for i in range(10):
+        X_check, y_check, date_check = fetch_batch(test_std,test_date, 1, l, w, pred_window)
         #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
         plt.figure()
-        plt.plot(y_check[0,:],label='actual')
-        plt.plot(prediction[0,:],label='predictions')
+        plt.plot_date(date_check.reshape(-1),y_check[0,:],xdate=True,label='actual',ls='-')
+        plt.plot_date(date_check.reshape(-1),prediction[0,:],xdate=True,label='predictions',ls='-')
+        plt.xticks(rotation="vertical")
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
