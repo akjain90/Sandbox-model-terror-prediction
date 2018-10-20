@@ -1,3 +1,4 @@
+check this branch
 import pandas as pd
 import csv
 import numpy as np
@@ -140,6 +141,7 @@ with tf.Session() as sess:
 
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
+img_dir = "../../../images/1_complex/with_features/"
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
@@ -153,4 +155,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,directory)
+        save_fig(i,img_dir)
