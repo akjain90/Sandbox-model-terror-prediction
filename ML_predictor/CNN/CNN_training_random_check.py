@@ -121,6 +121,7 @@ print(random_check_dates.shape)
 random_check_std = std.transform(random_check_set)
 
 #%%
+img_dir = "../../../images/random_new/with_features/"
 with tf.Session() as sess:
     saver.restore(sess,'../saved_model/1_complex/with_features/')
     
@@ -135,4 +136,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,'../saved_model/random_new/with_features/')
+        save_fig(i,img_dir)

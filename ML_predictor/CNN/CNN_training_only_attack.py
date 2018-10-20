@@ -125,4 +125,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,directory)
+        save_fig(i,img_dir)
