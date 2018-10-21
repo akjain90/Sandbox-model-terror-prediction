@@ -32,5 +32,5 @@ def prepare_data(file,train=60,test=20,cv=20,normalize=False):
         train_std = std.fit_transform(train_set)
         test_std = std.transform(test_set)
         cv_std = std.transform(cv_set)
-        return train_std,train_date,test_set,test_date,cv_std,cv_date,std
+        return train_std,train_date,test_std,test_date,cv_std,cv_date,std
     

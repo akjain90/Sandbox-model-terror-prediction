@@ -6,40 +6,20 @@ import datetime
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 import os
-#%%
-
-def fetch_batch(data, batch_size, l, w, pred_window):
-    num_steps = l*w
-    data_len, features = data.shape
-    end = data_len-num_steps-pred_window
-    index = np.random.randint(0,end,batch_size)
-    X = []
-    y = []
-    for i in index:
-        temp_X = data[i:i+num_steps,:].reshape(l,w,features)
-        temp_y = data[i+num_steps:i+num_steps+pred_window,0].reshape(-1)
-        X.append(temp_X)
-        y.append(temp_y)
-    return np.array(X), np.array(y)
+from modules.fetch_batch import fetch_batch
+from modules.save_fig import save_fig
 
 #%%
-""" Save figure """
-def save_fig(fig_id,directory, tight_layout=True):
-    path = os.path.join(directory+ str(fig_id) + ".png")
-    print("Saving figure", fig_id)
-    if tight_layout:
-        plt.tight_layout()
-    plt.savefig(path, format='png', dpi=300)
-
-#%%
-data = pd.read_csv("../afg.csv",index_col=0)
+data = pd.read_csv("../test_sin_data.csv",index_col=0)
 
 data_val = data.values
 print(len(data_val))
 #%%
 train_len = np.floor_divide(90*len(data_val),100)
 train_set = data_val[:train_len,0:1]
+train_date = data_val[:train_len,1]
 test_set = data_val[train_len:,0:1]
+test_date = data_val[train_len:,1]
 
 std = StandardScaler()
 
@@ -53,16 +33,17 @@ l = 10
 w = 10
 #c = 3
 c = 1
-pred_window = 30
-num_epoch = 5000
+pred_window = 60
+num_epoch = 2000
 batch_size = 200
-directory = '../saved_model/afg/only_attack/'
+directory = '../saved_model/test_sin_data/only_attack/'
 
 
 X = tf.placeholder(dtype = tf.float32, 
                    shape = (None, l,w,c), name="X")
 y = tf.placeholder(dtype = tf.float32,
                    shape = (None,pred_window), name="y")
+training = tf.placeholder_with_default(False,[],name="training")
 
 conv_1 = tf.layers.conv2d(X,
                           filters=4,
@@ -105,9 +86,10 @@ pool_2 = tf.layers.max_pooling2d(conv_2,
 #
 flatten = tf.layers.flatten(pool_2)
 print(flatten)
-dense_1 = tf.layers.dense(flatten, units=100, activation=tf.nn.relu, name="dense_1")
-
-dense_2 = tf.layers.dense(dense_1, units=50, activation=tf.nn.relu, name="dense_2")
+dropout_1 = tf.layers.dropout(flatten, rate=.2,training=training, name="dropout_1")
+dense_1 = tf.layers.dense(dropout_1, units=100, activation=tf.nn.relu, name="dense_1")
+dropout_2 = tf.layers.dropout(dense_1, rate=.2,training=training, name="dropout_2")
+dense_2 = tf.layers.dense(dropout_2, units=50, activation=tf.nn.relu, name="dense_2")
 
 output = tf.layers.dense(dense_2, units=pred_window, name="output")
 
@@ -124,12 +106,12 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
     for epoch in range(num_epoch):
-        X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
+        X_batch, y_batch, _ = fetch_batch(train_std,train_date, batch_size, l, w, pred_window)
         #X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
         sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
-        if epoch%50==0:
+        if epoch%100==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch, y: y_batch})
-            test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
+            test_x, test_y,_ = fetch_batch(test_std,test_date, 1, l, w, pred_window)
             #test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
             test_error = sess.run(mse, feed_dict = {X:test_x, y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
@@ -142,17 +124,19 @@ with tf.Session() as sess:
 
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
+img_dir = "../../../images/test_sin_data/only_attack/"
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
     for i in range(10):
-        X_check, y_check = fetch_batch(test_std, 1, l, w, pred_window)
+        X_check, y_check,date_check = fetch_batch(test_std,test_date, 1, l, w, pred_window)
         #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
         plt.figure()
-        plt.plot(y_check[0,:],label='actual')
-        plt.plot(prediction[0,:],label='predictions')
+        plt.plot_date(date_check.reshape(-1),y_check[0,:],xdate=True,label='actual',ls='-')
+        plt.plot_date(date_check.reshape(-1),prediction[0,:],xdate=True,label='predictions',ls='-')
+        plt.xticks(rotation="vertical")
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,directory)
+        save_fig(i,img_dir)

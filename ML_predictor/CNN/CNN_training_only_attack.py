@@ -21,7 +21,7 @@ l = 10
 w = 10
 #c = 3
 c = 1
-pred_window = 30
+pred_window = 60
 num_epoch = 2000
 batch_size = 200
 directory = '../saved_model/1_complex/only_attack/'
@@ -92,12 +92,12 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
     for epoch in range(num_epoch):
-        X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
+        X_batch, y_batch,_ = fetch_batch(train_std,train_date, batch_size, l, w, pred_window)
         #X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
         sess.run(training_op, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
         if epoch%50==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch[:,:,:,2:], y: y_batch})
-            test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
+            test_x, test_y,_ = fetch_batch(test_std,test_date, 1, l, w, pred_window)
             #test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
             test_error = sess.run(mse, feed_dict = {X:test_x[:,:,:,2:], y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
@@ -114,7 +114,7 @@ img_dir = "../../../images/1_complex/only_attack/"
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
-    for i in range(5):
+    for i in range(10):
         X_check, y_check, date_check = fetch_batch(test_std,test_date, 1, l, w, pred_window)
         #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check[:,:,:,2:], y: y_check})
