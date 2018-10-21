@@ -9,6 +9,7 @@ import os
 from modules.fetch_batch import fetch_batch
 from modules.save_fig import save_fig
 from modules.prepare_data import prepare_data
+from modules.seq_fetch_batch import seq_fetch_batch
 #%%
 
 train_std,train_date,test_std,test_date,cv_std,cv_date,std = prepare_data("../1_complex.csv",
@@ -22,7 +23,11 @@ w = 10
 c = 3
 pred_window = 30
 num_epoch = 2000
-batch_size = 200
+batch_size = 20
+train_len = len(train_std)
+seq_window = 1
+train_index = 0
+test_index = 0
 directory = '../saved_model/1_complex/with_features/'
 
 X = tf.placeholder(dtype = tf.float32, 
@@ -87,24 +92,27 @@ saver = tf.train.Saver()
 init = tf.global_variables_initializer()
 
 #%%
+
+
 with tf.Session() as sess:
     sess.run(init)
-    for epoch in range(num_epoch):
-        X_batch, y_batch = fetch_batch(train_std, batch_size, l, w, pred_window)
-        #X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
-        sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
-        if epoch%50==0:
+    for epoch in range(train_len):
+        X_batch, y_batch,temp_date,train_index,terminate = seq_fetch_batch(train_std,train_date,
+                                                 batch_size, l, w, pred_window,
+                                                 train_index,seq_window)
+        for iter in range(50):
+            sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
+        if epoch%10==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch, y: y_batch})
-            test_x, test_y = fetch_batch(test_std, 1, l, w, pred_window)
-            #test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
+            test_x, test_y,temp_date,test_index,temp = seq_fetch_batch(test_std,test_date,
+                                                          1, l, w, pred_window,
+                                                          test_index,seq_window)
             test_error = sess.run(mse, feed_dict = {X:test_x, y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
+        if terminate:
+            print("Loop break at epoch:",epoch)
+            break
     saver.save(sess,directory)
-    #plt.figure()
-    #plt.plot()
-    
-
-#print(mse)
 
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
