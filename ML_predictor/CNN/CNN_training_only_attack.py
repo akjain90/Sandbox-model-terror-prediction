@@ -21,7 +21,7 @@ l = 10
 w = 10
 #c = 3
 c = 1
-pred_window = 60
+pred_window = 30
 num_epoch = 2000
 batch_size = 200
 directory = '../saved_model/1_complex/only_attack/'
@@ -125,4 +125,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,img_dir)
+        save_fig(i+10,img_dir)

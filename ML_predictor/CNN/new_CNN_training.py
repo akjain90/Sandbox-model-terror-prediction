@@ -51,11 +51,19 @@ conv_2 = tf.layers.conv2d(conv_1,
                           activation=tf.nn.relu, 
                           name = "conv_2")
 
+conv_3 = tf.layers.conv2d(conv_2,
+                          filters=16,
+                          kernel_size=(5,5),
+                          strides=1,
+                          padding="same",
+                          activation=tf.nn.relu, 
+                          name = "conv_3")
+print(conv_3)
 
-pool_2 = tf.layers.max_pooling2d(conv_2, 
-                                 pool_size=(3,3),
-                                 strides=2,
-                                 name = "max_pool_2")
+#pool_2 = tf.layers.max_pooling2d(conv_2, 
+#                                 pool_size=(3,3),
+#                                 strides=2,
+#                                 name = "max_pool_2")
 
 #conv_3 = tf.layers.conv2d(pool_2,
 #                          filters=64,
@@ -70,12 +78,12 @@ pool_2 = tf.layers.max_pooling2d(conv_2,
 #                                 strides=2,
 #                                 name = "max_pool_3")
 #
-flatten = tf.layers.flatten(pool_2)
+flatten = tf.layers.flatten(conv_3)
 print(flatten)
 #dropout_1 = tf.layers.dropout(flatten,0.2,training=training, name="dropout_1")
-dense_1 = tf.layers.dense(flatten, units=100, activation=tf.nn.relu, name="dense_1")
+dense_1 = tf.layers.dense(flatten, units=500, activation=tf.nn.relu, name="dense_1")
 #dropout_2 = tf.layers.dropout(dense_1,0.2,training=training,name="dropout_2")
-dense_2 = tf.layers.dense(dense_1, units=50, activation=tf.nn.relu, name="dense_2")
+dense_2 = tf.layers.dense(dense_1, units=150, activation=tf.nn.relu, name="dense_2")
 
 output = tf.layers.dense(dense_2, units=pred_window, name="output")
 
@@ -125,4 +133,4 @@ with tf.Session() as sess:
         plt.legend()
         plt.xlabel('Days')
         plt.ylabel('Attack')
-        save_fig(i,img_dir)
+        #save_fig(i,img_dir)
