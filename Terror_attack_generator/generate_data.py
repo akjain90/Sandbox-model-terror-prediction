@@ -66,7 +66,7 @@ class generate_data:
     def set_fm_attack_fact(self, today):
         dist_to_fm = np.absolute(today-self.all_fm)
         closest_dist_to_fm = np.min(dist_to_fm).days
-        if closest_dist_to_fm <= 5:
+        if closest_dist_to_fm <= len(fm_attack_dist)-1:
             self.fm_attack_fact = fm_attack_dist[closest_dist_to_fm]
         else:
             self.fm_attack_fact = 0
@@ -75,7 +75,7 @@ class generate_data:
     def set_holi_attack_fact(self, today):
         dist_to_holi = np.absolute(today-self.holidays)
         closest_dist_to_holi = np.min(dist_to_holi).days
-        if closest_dist_to_holi <= 5:
+        if closest_dist_to_holi <= len(holi_attack_dist)-1:
             self.holi_attack_fact = holi_attack_dist[closest_dist_to_holi]
         else:
             self.holi_attack_fact = 0

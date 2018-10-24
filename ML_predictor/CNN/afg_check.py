@@ -10,7 +10,7 @@ from modules.fetch_batch import fetch_batch
 from modules.save_fig import save_fig
 
 #%%
-data = pd.read_csv("../test_sin_data.csv",index_col=0)
+data = pd.read_csv("../Philippinen.csv",index_col=0)
 
 data_val = data.values
 print(len(data_val))
@@ -25,6 +25,8 @@ std = StandardScaler()
 
 train_std = std.fit_transform(train_set)
 test_std = std.transform(test_set)
+print(len(train_std))
+print(len(test_std))
 #%%
 # graph definition
 tf.reset_default_graph()
@@ -33,10 +35,10 @@ l = 10
 w = 10
 #c = 3
 c = 1
-pred_window = 60
+pred_window = 30
 num_epoch = 2000
 batch_size = 200
-directory = '../saved_model/test_sin_data/only_attack/'
+directory = '../saved_model/Philippinen/only_attack/'
 
 
 X = tf.placeholder(dtype = tf.float32, 
@@ -86,10 +88,10 @@ pool_2 = tf.layers.max_pooling2d(conv_2,
 #
 flatten = tf.layers.flatten(pool_2)
 print(flatten)
-dropout_1 = tf.layers.dropout(flatten, rate=.2,training=training, name="dropout_1")
-dense_1 = tf.layers.dense(dropout_1, units=100, activation=tf.nn.relu, name="dense_1")
-dropout_2 = tf.layers.dropout(dense_1, rate=.2,training=training, name="dropout_2")
-dense_2 = tf.layers.dense(dropout_2, units=50, activation=tf.nn.relu, name="dense_2")
+
+dense_1 = tf.layers.dense(flatten, units=100, activation=tf.nn.relu, name="dense_1")
+
+dense_2 = tf.layers.dense(dense_1, units=50, activation=tf.nn.relu, name="dense_2")
 
 output = tf.layers.dense(dense_2, units=pred_window, name="output")
 
@@ -107,12 +109,12 @@ with tf.Session() as sess:
     sess.run(init)
     for epoch in range(num_epoch):
         X_batch, y_batch, _ = fetch_batch(train_std,train_date, batch_size, l, w, pred_window)
-        #X_batch, y_batch = fetch_batch(train_set, batch_size, l, w, pred_window)
+        #X_batch, y_batch,_ = fetch_batch(train_set,train_date, batch_size, l, w, pred_window)
         sess.run(training_op, feed_dict = {X:X_batch, y: y_batch})
-        if epoch%100==0:
+        if epoch%50==0:
             train_error = sess.run(mse, feed_dict = {X:X_batch, y: y_batch})
             test_x, test_y,_ = fetch_batch(test_std,test_date, 1, l, w, pred_window)
-            #test_x, test_y = fetch_batch(test_set, 1, l, w, pred_window)
+            #test_x, test_y,_ = fetch_batch(test_set,test_date, 1, l, w, pred_window)
             test_error = sess.run(mse, feed_dict = {X:test_x, y: test_y})
             print("Epoch: ",epoch, " Training error: ", train_error, " Test error: ", test_error)
     saver.save(sess,directory)
@@ -124,13 +126,13 @@ with tf.Session() as sess:
 
 #%%
 #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
-img_dir = "../../../images/test_sin_data/only_attack/"
+img_dir = "../../../images/Philippinen/only_attack/"
 with tf.Session() as sess:
     saver.restore(sess,directory)
     
-    for i in range(10):
+    for i in range(5):
         X_check, y_check,date_check = fetch_batch(test_std,test_date, 1, l, w, pred_window)
-        #X_check, y_check = fetch_batch(test_set, 1, l, w, pred_window)
+        #X_check, y_check,date_check = fetch_batch(test_set,test_date, 1, l, w, pred_window)
         prediction = sess.run(output,feed_dict={X:X_check, y: y_check})
         plt.figure()
         plt.plot_date(date_check.reshape(-1),y_check[0,:],xdate=True,label='actual',ls='-')
