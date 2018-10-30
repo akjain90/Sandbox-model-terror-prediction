@@ -11,11 +11,11 @@ from modules.predict import predict
 from modules.save_fig import save_fig
 
 def main():
-    data_name = 'sandbox_attacks'
+    data_name = 'test_exp_chirp'
     data_dir = '../../'+data_name+'.csv'
-    train_data,train_date,test_data,test_date,std = prepare_data(data_dir,normalize=True)
+    train_data,train_date,test_data,test_date,std = prepare_data(data_dir,normalize=True,scaling='standardscaler')
     model_dir = './model/'
-    num_epoch = 6000
+    num_epoch = 1000
     sess, train_loss,epoch_count = training(train_data,train_date,model_dir,num_epoch=num_epoch)
     
     prediction,true_labels,label_dates = predict(test_data,test_date,sess,model_dir)
