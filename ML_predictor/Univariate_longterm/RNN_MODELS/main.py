@@ -9,7 +9,6 @@ from modules.prepare_data import prepare_data
 from modules.training import training
 from modules.predict import predict
 from modules.save_fig import save_fig
-from modules.create_look_back import create_look_back
 
 def main():
     data_name = 'test_exp_chirp'

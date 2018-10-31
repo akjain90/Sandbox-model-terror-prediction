@@ -7,17 +7,12 @@ Created on Wed Oct 24 14:33:50 2018
 from modules.fetch_batch import fetch_batch
 import tensorflow as tf
 
-def training(data,model_dir,num_epoch=20,batch_size=200,n_steps=100,n_inputs=1):
+def training(data,model_dir,num_epoch=20,batch_size=200,n_steps=100,n_inputs=1,n_neurons=50,n_outputs=1,n_layers=3):
     
     tf.reset_default_graph()
-    
-    #n_steps = 100
-    n_neurons = 50
-    #n_inputs = 1
-    n_outputs = 1
+
     learning_rate = 0.0001
-    n_layers = 3
-    
+
     X = tf.placeholder(tf.float32, shape=(None,n_steps,n_inputs),name='X')
     y = tf.placeholder(tf.float32, shape=(None,n_steps,n_outputs), name = 'y')
     
