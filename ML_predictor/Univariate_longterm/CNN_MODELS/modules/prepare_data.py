@@ -5,7 +5,7 @@ Created on Sat Oct 20 14:52:47 2018
 @author: akjai
 """
 from sklearn.preprocessing import StandardScaler
-import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
 def prepare_data(file,test_len = 130,normalize=False,scaling='minmax'):
@@ -26,11 +26,11 @@ def prepare_data(file,test_len = 130,normalize=False,scaling='minmax'):
     elif(scaling=='standardscaler'):
         std = StandardScaler()
         train_std = std.fit_transform(train_set)
-        test_std = std.transform(test_set)
-        return train_std,train_date,test_std,test_date,std
+        #test_std = std.transform(test_set)
+        return train_std,train_date,test_set,test_date,std
     elif(scaling=='minmax'):
         std = MinMaxScaler()
         train_std = std.fit_transform(train_set)
-        test_std = std.transform(test_set)
-        return train_std,train_date,test_std,test_date,std
+        #test_std = std.transform(test_set)
+        return train_std,train_date,test_set,test_date,std
     

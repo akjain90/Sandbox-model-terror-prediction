@@ -39,7 +39,7 @@ def training(data,model_dir,num_epoch=20,batch_size=200,n_steps=100,n_inputs=1,n
                 loss = sess.run(mse,feed_dict={X:X_train, y:y_train})
                 training_loss.append(loss)
                 epoch_count.append(epoch)
-                if(epoch%50==0):
+                if(epoch%100==0):
                     print('Epoch: ',epoch,' Training loss: ',loss)
         saver.save(sess,model_dir) 
     

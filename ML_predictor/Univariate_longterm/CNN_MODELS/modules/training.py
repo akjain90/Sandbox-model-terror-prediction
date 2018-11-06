@@ -28,7 +28,7 @@ def training(data,date,model_dir,num_epoch=20,batch_size=200,pred_window = 30):
                               padding="same",
                               activation=tf.nn.relu, 
                               name = "conv_1")
-    print(conv_1)
+    #print(conv_1)
     conv_2 = tf.layers.conv2d(conv_1,
                               filters=16,
                               kernel_size=(5,5),
@@ -36,19 +36,19 @@ def training(data,date,model_dir,num_epoch=20,batch_size=200,pred_window = 30):
                               padding="same",
                               activation=tf.nn.relu, 
                               name = "conv_2")
-    print(conv_2)
+    #print(conv_2)
 #    pool_2 = tf.layers.max_pooling2d(conv_2, 
 #                                     pool_size=(3,3),
 #                                     strides=2,
 #                                     name = "max_pool_2")
     
     flatten = tf.layers.flatten(conv_2)
-    print(flatten)
+    #print(flatten)
     dense_1 = tf.layers.dense(flatten, units=800, activation=tf.nn.relu, name="dense_1")
     
     dense_2 = tf.layers.dense(dense_1, units=200, activation=tf.nn.relu, name="dense_2")
     
-    dense_3 = tf.layers.dense(dense_1, units=80, activation=tf.nn.relu, name="dense_3")
+    dense_3 = tf.layers.dense(dense_2, units=80, activation=tf.nn.relu, name="dense_3")
     
     output = tf.layers.dense(dense_3, units=pred_window, name="output")
     
@@ -73,7 +73,7 @@ def training(data,date,model_dir,num_epoch=20,batch_size=200,pred_window = 30):
                 loss = sess.run(mse, feed_dict = {X:X_batch, y:y_batch})
                 training_loss.append(loss)
                 epoch_count.append(epoch)
-                if(epoch%100==0):
+                if(epoch%200==0):
                     print('Epoch:', epoch,' Training loss:',loss)
         saver.save(sess,model_dir)
     return sess, training_loss, epoch_count
