@@ -16,7 +16,8 @@ import pandas as pd
 def main():
     loss_norm = []
     loss_difference = []
-    countries = ['Afghanistan','Indien','Irak','Kolumbien','Pakistan','Philippinen','sandbox_attacks','test_exp_chirp']
+    #countries = ['Afghanistan','Indien','Irak','Kolumbien','Pakistan','Philippinen','sandbox_attacks','test_exp_chirp']
+    countries = ['sandbox_attacks_finetuned']
     for country in countries:
         
         #data_name = 'test_exp_chirp'
@@ -24,7 +25,7 @@ def main():
         data_dir = '../../'+data_name+'.csv'
         train_data_scaled,train_date,test_data,test_date,std = prepare_data(data_dir,normalize=True,scaling='minmax')
         model_dir = './model/'
-        num_epoch = 2000
+        num_epoch = 3000
         print(country)
         sess, train_loss,epoch_count = training(train_data_scaled,train_date,model_dir,num_epoch=num_epoch)
         print()
@@ -55,7 +56,7 @@ def main():
         plt.ylabel('Attack')
         save_fig(data_name,'./Images/')
     loss_dict = {'Countries':countries,'Normed_loss': loss_norm,'Differential_loss': loss_difference}
-    pd.DataFrame(loss_dict).to_csv('./CNN_loss.csv')
+    pd.DataFrame(loss_dict).to_csv('./CNN_loss_finetuned.csv')
 
 if __name__=='__main__':
     main()

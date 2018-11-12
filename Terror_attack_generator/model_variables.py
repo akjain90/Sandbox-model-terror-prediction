@@ -28,8 +28,10 @@ holi_attack_dist = np.array([0.6,0.2,0.1,0.06,0.04,0.01])
 #holiday_booster = 0.1
 # resource pool: rp
 rp_init = 4500
-rp_deposit_per_day = 500
-rp_withdraw_per_casuality = 500
+#rp_deposit_per_day = 500
+rp_deposit_per_day = 900
+#rp_withdraw_per_casuality = 500
+rp_withdraw_per_casuality = 100
 #%%
 # lone wolf attack variables
 # lone wolf: lw

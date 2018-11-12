@@ -40,12 +40,12 @@ def main():
        index += 1
    #print((full_moon_array))
    #print(len(pd.date_range(start=start_date,end=end_date)))
-   attack_df = pd.DataFrame({'Date':date,
-                             'Num_attacks':fp_temp,
-                             'Full_moons' : full_moon_array,
-                             'Holidays': holiday_array})
+   attack_df = pd.DataFrame({'Attacks':fp_temp,
+                             'Date':date,})
+                             #'Full_moons' : full_moon_array,
+                             #'Holidays': holiday_array})
 #   print(attack_df.head(10))
-   attack_df.to_csv('../ML_predictor/1_complex.csv')
+   attack_df.to_csv('../ML_predictor/1_complex_finetuned.csv')
    plt.plot(fp_temp)
    
 ## Script to check holidays attack factor
